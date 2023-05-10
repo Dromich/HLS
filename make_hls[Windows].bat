@@ -2,37 +2,41 @@
 
 setlocal EnableDelayedExpansion
 
-rem Перевірка наявності ffmpeg
+rem Check for ffmpeg
 set FFMPEG_PATH=%~dp0ffmpeg.exe
 if not exist "!FFMPEG_PATH!" (
-  echo Помилка: ffmpeg не знайдено, дял коректної роботи встановіть цю біблотеку
+  echo Error: ffmpeg not found. Please install this library to use the script.
   pause
   exit /b 1
 )
 
-set /p OPTION=Виберіть опцію (1 або 2): 
+echo [1] Convert files, more load on the computer;
+echo [2] Use input video and audio codecs without reencoding. Less load on the computer
+
+set /p OPTION=Choose an option (1 or 2): 
 
 if %OPTION% EQU 1 (
-  rem Опція 1: конвертувати файл
+  rem Option 1: Convert files
+
   for %%i in (*.mp4) do (
-    echo Конвертування файла -  %%i 
+    echo Converting file -  %%i 
     echo  %%~ni
     md %%~ni
-    ffmpeg -i "%%i" -c:v libx264 -c:a aac -start_number 0 -hls_time 2 -hls_list_size 0 -f hls "./%%~ni/index.m3u8"
+    ffmpeg -i "%%i" -c:v libx264 -c:a aac -b:a 196k -start_number 0 -hls_time 2 -hls_list_size 0 -f hls "./%%~ni/index.m3u8"
   )
 ) else if %OPTION% EQU 2 (
-  rem Опція 2: використати вхідний відео- та аудіо-кодек без перекодування
+  rem Option 2: Use input video and audio codecs without reencoding
   for %%i in (*.mp4) do (
-    echo Обробка файлу без перекодування -  %%i 
+    echo Processing file without reencoding -   %%i 
     echo  %%~ni
     md %%~ni
     ffmpeg -i "%%i" -codec copy -start_number 0 -hls_time 2 -hls_list_size 0 -f hls "./%%~ni/index.m3u8"
   )
 ) else (
-  echo Помилка: невірна опція.
+  echo Error: invalid option.
   pause
   exit /b 1
 )
 
-echo Виконання завершено.
+echo Execution completed.
 pause

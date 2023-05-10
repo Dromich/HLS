@@ -5,7 +5,7 @@ setlocal EnableDelayedExpansion
 rem Перевірка наявності ffmpeg
 set FFMPEG_PATH=%~dp0ffmpeg.exe
 if not exist "!FFMPEG_PATH!" (
-  echo Помилка: ffmpeg не знайдено, дял коректної роботивстановіть цю біблотеку
+  echo Помилка: ffmpeg не знайдено, дял коректної роботи встановіть цю біблотеку
   pause
   exit /b 1
 )
